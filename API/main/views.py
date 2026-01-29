@@ -27,8 +27,18 @@ def create_chat(request):
 
 @api_view(['GET', 'DELETE'])
 def get_delete_chat(request, id):
-    if request.method == 'GET':
+    error_response = Response(
+            {'error': 'Чат с таким ID не найден'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    try:
         chat = Chat.objects.get(id=id)
+    except Chat.DoesNotExist:
+        return error_response
+
+    if request.method == 'GET':
+        # chat = Chat.objects.get(id=id)
         limit_str = request.query_params.get('limit', '20')
         try:
             limit = int(limit_str)
@@ -43,7 +53,6 @@ def get_delete_chat(request, id):
         messages_data = MessageSerializer(messages, many=True).data
         chat_data = ChatsSerializer(chat).data
 
-
         response_data = {
             'chat': chat_data,
             'messages': messages_data
@@ -51,9 +60,12 @@ def get_delete_chat(request, id):
         return Response(response_data, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
-        chat = get_object_or_404(Chat, id=id)
-        chat.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+        # chat = get_object_or_404(Chat, id=id)
+            chat.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Chat.DoesNotExist:
+            return error_response
 
 
 
