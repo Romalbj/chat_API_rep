@@ -8,8 +8,16 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import ChatsSerializer, MessageSerializer
 
-# def home(request):
-#     return HttpResponse("<h1>Hello, world!</h1><p>This is an HTTP response with HTML tags.</p>")
+def get_chat_or_error(id):
+    try:
+        return Chat.objects.get(id=id), None
+    except Chat.DoesNotExist:
+        error_response = Response(
+            {'error': 'Чат с таким ID не найден'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+        return None, error_response
+
 
 @api_view(['POST'])
 def create_chat(request):
@@ -23,18 +31,11 @@ def create_chat(request):
 
 @api_view(['GET', 'DELETE'])
 def get_delete_chat(request, id):
-    error_response = Response(
-            {'error': 'Чат с таким ID не найден'},
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-    try:
-        chat = Chat.objects.get(id=id)
-    except Chat.DoesNotExist:
-        return error_response
+    chat, error = get_chat_or_error(id)
+    if error is not None:
+        return error
 
     if request.method == 'GET':
-        # chat = Chat.objects.get(id=id)
         limit_str = request.query_params.get('limit', '20')
         try:
             limit = int(limit_str)
@@ -57,36 +58,25 @@ def get_delete_chat(request, id):
 
     elif request.method == 'DELETE':
         try:
-        # chat = get_object_or_404(Chat, id=id)
             chat.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Chat.DoesNotExist:
-            return error_response
+            return error
 
 
 
 @api_view(['POST'])
 def send_message(request, id):
-    error_response = Response(
-        {'error': 'Чат с таким ID не найден'},
-        status=status.HTTP_404_NOT_FOUND
-    )
-
-    try:
-        chat = Chat.objects.get(id=id)
-    except Chat.DoesNotExist:
-        return error_response
-
-
-        # chat = get_object_or_404(Chat, id=id)
+    chat, error = get_chat_or_error(id)
+    if error is not None:
+        return error
 
     data = request.data.copy()
     data['chat'] = chat.id
-
     serializer = MessageSerializer(data=data)
 
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
+    return Response(error, status=status.HTTP_400_BAD_REQUEST)
