@@ -16,4 +16,4 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.chat} {self.text}'
+        return f'Чат: {self.chat}, сообщение: {self.text}'
