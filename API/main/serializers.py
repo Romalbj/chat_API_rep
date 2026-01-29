@@ -37,8 +37,8 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         # fields = '__all__'
 
-        fields = ['id', 'text', 'created_at', 'chat_id']
-        read_only_fields = ['id', 'created_at', 'chat_id']
+        fields = ['id', 'text', 'created_at', 'chat']
+        read_only_fields = ['id', 'created_at']
 
     def validate_text(self, text):
         if len(text) == 0:

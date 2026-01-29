@@ -13,17 +13,13 @@ from .serializers import ChatsSerializer, MessageSerializer
 
 @api_view(['POST'])
 def create_chat(request):
-    if request.method == 'POST':
+    serializer = ChatsSerializer(data=request.data)
 
-        data = request.data.copy()
-        serializer = ChatsSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if serializer.is_valid():
-            serializer.save()
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'DELETE'])
 def get_delete_chat(request, id):
@@ -71,16 +67,26 @@ def get_delete_chat(request, id):
 
 @api_view(['POST'])
 def send_message(request, id):
-    if request.method == 'POST':
-        chat = get_object_or_404(Chat, id=id)
+    error_response = Response(
+        {'error': 'Чат с таким ID не найден'},
+        status=status.HTTP_404_NOT_FOUND
+    )
 
-        data = request.data.copy()
-        data['chat'] = chat.id
+    try:
+        chat = Chat.objects.get(id=id)
+    except Chat.DoesNotExist:
+        return error_response
 
-        serializer = MessageSerializer(data=data)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # chat = get_object_or_404(Chat, id=id)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    data = request.data.copy()
+    data['chat'] = chat.id
+
+    serializer = MessageSerializer(data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(error_response, status=status.HTTP_400_BAD_REQUEST)

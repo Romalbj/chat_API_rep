@@ -74,17 +74,30 @@ WSGI_APPLICATION = 'API.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# MySQL
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'chats_API',
+#         'USER': 'root',
+#         'PASSWORD': 'romalbj2306',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
+
+
+# PostgesDB
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'chats_API',
-        'USER': 'root',
-        'PASSWORD': 'romalbj2306',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'chat_API',
+        'USER': 'chat_admin',
+        'PASSWORD': 'admin_of_chat',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
