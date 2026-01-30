@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from .models import Chat, Message
 from django.shortcuts import get_object_or_404
 from .serializers import ChatsSerializer, MessageSerializer
-from .utils import get_chat
+from .utils import getChatById, get_chat, delete_chat
 
 
 
@@ -22,43 +22,15 @@ def create_chat(request):
 
 @api_view(['GET', 'DELETE'])
 def get_delete_chat(request, id):
-    chat, error = get_chat(id)
-    if error is not None:
-        return error
-
     if request.method == 'GET':
-        limit_str = request.query_params.get('limit', '20')
-        try:
-            limit = int(limit_str)
-            if limit < 1:
-                limit = 20
-            elif limit > 100:
-                limit = 100
-        except ValueError:
-            limit = 20
-
-        messages = Message.objects.filter(chat=chat).order_by('created_at')[:limit]
-        messages_data = MessageSerializer(messages, many=True).data
-        chat_data = ChatsSerializer(chat).data
-
-        response_data = {
-            'chat': chat_data,
-            'messages': messages_data
-        }
-        return Response(response_data, status=status.HTTP_200_OK)
-
+        return get_chat(request, id)
     elif request.method == 'DELETE':
-        try:
-            chat.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Chat.DoesNotExist:
-            return error
-
+        return delete_chat(request, id)
 
 
 @api_view(['POST'])
 def send_message(request, id):
-    chat, error = get_chat(id)
+    chat, error = getChatById(id)
     if error is not None:
         return error
 
