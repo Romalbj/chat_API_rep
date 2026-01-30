@@ -27,6 +27,8 @@ Chat API — Django + PostgreSQL в Docker
     DB_HOST=db
     DJANGO_SECRET_KEY=django-insecure-jz0rruqvmp%-rf%jq3ti&9j5q-5$(kd$tm5ht6gb8^#_q*70m
 
+3. В файле settings.py закомментить подключение к бд # PostgesDB for local и раскомментить # PostgesDB for Docker   
+
 4. Запустите контейнеры:
 
  ```bash
