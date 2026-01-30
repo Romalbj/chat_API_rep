@@ -15,7 +15,7 @@ Chat API — Django + PostgreSQL в Docker
 1. Склонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/ваш-репозиторий/chat_API.git
+   git clone https://github.com/Romalbj/chat_API_rep.git
    cd chat_API
 
 2. Создайте файл .env в корне проекта:
