@@ -16,6 +16,7 @@ class ChatsSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'created_at']
         read_only_fields = ['id', 'created_at']
 
+
     def validate_title(self, title):
         if len(title) == 0:
             raise serializers.ValidationError('Название чата должно содержать хотя бы 1 символ (не пробел)')
