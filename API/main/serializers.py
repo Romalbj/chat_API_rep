@@ -30,7 +30,7 @@ class MessageSerializer(serializers.ModelSerializer):
         trim_whitespace=True,
         required=False,
         error_messages={
-            'blank': 'Текст должен состоять хотя бы 1 символ (не пробел)',
+            'blank': 'Текст должен содержать хотя бы 1 символ (не пробел)',
         }
     )
 
@@ -43,7 +43,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def validate_text(self, text):
         if len(text) == 0:
-            raise serializers.ValidationError('Текст должен состоять хотя бы 1 символ (не пробел)')
+            raise serializers.ValidationError('Текст должен содержать хотя бы 1 символ (не пробел)')
         elif len(text) > 5000:
             raise serializers.ValidationError('Длина текста не может превышать 5 000 символов.')
         return text
