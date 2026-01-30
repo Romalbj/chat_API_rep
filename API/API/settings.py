@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'API.wsgi.application'
 # }
 
 
-# PostgesDB
+# PostgesDB for local
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -98,6 +98,18 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# # PostgesDB for Docker
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.getenv('DB_NAME', 'chat_api'),  # ← читаем из .env
+#         'USER': os.getenv('DB_USER', 'chat_admin'),  # ← читаем из .env
+#         'PASSWORD': os.getenv('DB_PASSWORD', 'admin_of_chat'),
+#         'HOST': os.getenv('DB_HOST', 'db'),
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
