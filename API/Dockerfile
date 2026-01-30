@@ -5,7 +5,6 @@ WORKDIR /usr/src/app/
 
 RUN pip install --upgrade pip
 
-# Установка зависимостей
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         postgresql-client \
@@ -13,14 +12,11 @@ RUN apt-get update \
         libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Копируем и устанавливаем зависимости
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем весь проект
 COPY . .
 
-# Удаляем __pycache__ и .pyc-файлы (не нужны в образе)
 RUN find . -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
 RUN find . -type f -name '*.pyc' -delete
 
@@ -28,5 +24,4 @@ RUN find . -type f -name '*.pyc' -delete
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Запуск (для разработки)
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

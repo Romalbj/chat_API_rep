@@ -5,18 +5,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Chat, Message
 from django.shortcuts import get_object_or_404
-
 from .serializers import ChatsSerializer, MessageSerializer
+from .utils import get_chat
 
-def get_chat_or_error(id):
-    try:
-        return Chat.objects.get(id=id), None
-    except Chat.DoesNotExist:
-        error_response = Response(
-            {'error': 'Чат с таким ID не найден'},
-            status=status.HTTP_404_NOT_FOUND
-        )
-        return None, error_response
 
 
 @api_view(['POST'])
@@ -31,7 +22,7 @@ def create_chat(request):
 
 @api_view(['GET', 'DELETE'])
 def get_delete_chat(request, id):
-    chat, error = get_chat_or_error(id)
+    chat, error = get_chat(id)
     if error is not None:
         return error
 
@@ -67,7 +58,7 @@ def get_delete_chat(request, id):
 
 @api_view(['POST'])
 def send_message(request, id):
-    chat, error = get_chat_or_error(id)
+    chat, error = get_chat(id)
     if error is not None:
         return error
 
