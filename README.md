@@ -7,7 +7,7 @@ Chat API — Django + PostgreSQL в Docker
 - Django — веб-фреймворк
 - PostgreSQL — реляционная БД
 - Docker — контейнеризация
-- docker-compose** — оркестрация сервисов
+- docker-compose — оркестрация сервисов
 
 
 Запуск проекта в Docker
